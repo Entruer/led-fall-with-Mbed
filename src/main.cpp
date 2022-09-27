@@ -1,6 +1,5 @@
 #include <mbed.h>
 
-#include "WS2812.h"
 #include "ws2812b.hpp"
 
 #define BLOCK 8 //LEDブロックの長さ
