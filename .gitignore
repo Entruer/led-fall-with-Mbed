@@ -1,0 +1,10 @@
+# PlatformIO
+.pio
+
+#Clion
+cmake-build-*/
+.idea/
+CMakeListsPrivate.txt
+
+#VScode
+.vscode
