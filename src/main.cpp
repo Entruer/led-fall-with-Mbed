@@ -12,11 +12,11 @@
 #define REFMINV -80 //跳ね返り最小速度
 
 int main() {
-    WS2812B ws2812b(PA_15, 59, 120, 800, 1150, 450, 60);
+    WS2812B ws2812b(PA_15, 3, 400, 800, 850, 450, 60);
     DigitalOut led(LED1);
     ws2812b.setRGB(0,255,255,255);
     ws2812b.setRGB(1,1,1,100);
-//    ws2812b.setRGB(20,100,0,0);
+    ws2812b.setRGB(20,100,0,0);
     while (true) {
         led = !led;
         ws2812b.update();

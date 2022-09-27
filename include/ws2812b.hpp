@@ -23,10 +23,14 @@
 
 class WS2812B {
 private:
-    unsigned int zero_high_ns;
-    unsigned int one_high_ns;
-    unsigned int zero_low_ns;
-    unsigned int one_low_ns;
+//    unsigned int zero_high_ns;
+//    unsigned int one_high_ns;
+//    unsigned int zero_low_ns;
+//    unsigned int one_low_ns;
+    unsigned int zero_high_times;
+    unsigned int one_high_times;
+    unsigned int zero_low_times;
+    unsigned int one_low_times;
     unsigned int reset_us;
     uint8_t *trans_buffer;
     unsigned short max_port;
@@ -37,13 +41,19 @@ public:
             unsigned int one_high_ns,
             unsigned int zero_low_ns,
             unsigned int one_low_ns,
-            unsigned int reset_us) :
-            zero_high_ns(zero_high_ns),
-            one_high_ns(one_high_ns),
-            zero_low_ns(zero_low_ns),
-            one_low_ns(one_low_ns),
+            int reset_us) :
             reset_us(reset_us),
             pin(pin_name) {
+        double freq = osKernelGetSysTimerFreq();
+        double nano_second = 1000000000.0 / freq;
+        printf("nano_second: %f\n", nano_second);
+        zero_high_times = (zero_high_ns - 3 * nano_second) / (nano_second * 8);
+        one_high_times = (one_high_ns - 3 * nano_second) / (nano_second * 8);
+        zero_low_times = (zero_low_ns - 3 * nano_second) / (nano_second * 8);
+        one_low_times = (one_low_ns - 3 * nano_second) / (nano_second * 8);
+        printf("zero_high_times: %u\n", zero_high_times);
+
+
         max_port = size;
         trans_buffer = new uint8_t[size * 3]();
         pin = 0;
@@ -63,29 +73,28 @@ public:
         reset();
         for (int i = 0; i < max_port * 3; ++i) {
             for (int k = 0; k < 8; ++k) {
-                j = 0;
                 if ((trans_buffer[i] >> k) & 0x01) {
                     pin = 1;
-                    for (; j < one_high_ns; j++) {
+                    for (j = 0; j < one_high_times; j++) {
                         NOP;
                     }
-//                    wait_ns(one_high_ns);
+//                    wait_ns(400);
                     pin = 0;
-                    for (; j < one_low_ns; j++) {
+                    for (j = 0; j < one_low_times; j++) {
                         NOP;
                     }
-//                    wait_ns(one_low_ns);
+//                    wait_ns(800);
                 } else {
                     pin = 1;
-                    for (; j < zero_high_ns; j++) {
+                    for (j = 0; j < zero_high_times; j++) {
                         NOP;
                     }
-//                    wait_ns(zero_high_ns);
+//                    wait_ns(800);
                     pin = 0;
-                    for (; j < zero_low_ns; j++) {
+                    for (j = 0; j < zero_low_times; j++) {
                         NOP;
                     }
-//                    wait_ns(zero_low_ns);
+//                    wait_ns(400);
                 }
             }
         }
