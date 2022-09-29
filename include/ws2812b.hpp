@@ -15,23 +15,13 @@
 
 #include <mbed.h>
 
-#define ZERO_HIGH_NS 150
-#define ONE_HIGH_NS 800
-#define ZERO_LOW_NS 1100
-#define ONE_LOW_NS 450
-#define RESET_US 50
-
 class WS2812B {
 private:
-//    unsigned int zero_high_ns;
-//    unsigned int one_high_ns;
-//    unsigned int zero_low_ns;
-//    unsigned int one_low_ns;
     unsigned int zero_high_times;
     unsigned int one_high_times;
     unsigned int zero_low_times;
     unsigned int one_low_times;
-    unsigned int reset_us;
+    int reset_us;
     uint8_t *trans_buffer;
     unsigned short max_port;
     DigitalOut pin;
@@ -46,12 +36,10 @@ public:
             pin(pin_name) {
         double freq = osKernelGetSysTimerFreq();
         double nano_second = 1000000000.0 / freq;
-        printf("nano_second: %f\n", nano_second);
         zero_high_times = (zero_high_ns - 3 * nano_second) / (nano_second * 8);
         one_high_times = (one_high_ns - 3 * nano_second) / (nano_second * 8);
         zero_low_times = (zero_low_ns - 3 * nano_second) / (nano_second * 8);
         one_low_times = (one_low_ns - 3 * nano_second) / (nano_second * 8);
-        printf("zero_high_times: %u\n", zero_high_times);
 
 
         max_port = size;
@@ -78,23 +66,19 @@ public:
                     for (j = 0; j < one_high_times; j++) {
                         NOP;
                     }
-//                    wait_ns(400);
                     pin = 0;
                     for (j = 0; j < one_low_times; j++) {
                         NOP;
                     }
-//                    wait_ns(800);
                 } else {
                     pin = 1;
                     for (j = 0; j < zero_high_times; j++) {
                         NOP;
                     }
-//                    wait_ns(800);
                     pin = 0;
                     for (j = 0; j < zero_low_times; j++) {
                         NOP;
                     }
-//                    wait_ns(400);
                 }
             }
         }
