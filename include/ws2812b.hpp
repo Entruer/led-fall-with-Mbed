@@ -82,7 +82,6 @@ public:
                 }
             }
         }
-        pin = 1;
     }
 
     void reset() {
