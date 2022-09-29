@@ -60,7 +60,7 @@ public:
         int j;
         reset();
         __disable_irq();
-        for (int i = 0; i < max_port * 3; ++i) {
+        for (int i = 0; i < max_port * 3 + 3; ++i) {
             for (int k = 0; k < 8; ++k) {
                 if ((trans_buffer[i] >> k) & 0x01) {
                     pin = 1;
