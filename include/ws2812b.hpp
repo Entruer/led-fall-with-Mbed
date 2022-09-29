@@ -26,7 +26,7 @@ private:
     unsigned short max_port;
     DigitalOut pin;
 public:
-    WS2812B(PinName pin_name, unsigned short size,
+    WS2812B(PinName pin_name, int size,
             unsigned int zero_high_ns,
             unsigned int one_high_ns,
             unsigned int zero_low_ns,
@@ -47,7 +47,7 @@ public:
         pin = 0;
     }
 
-    void setRGB(unsigned short port, uint8_t R, uint8_t G, uint8_t B) {
+    void setRGB(int port, uint8_t R, uint8_t G, uint8_t B) {
         if (port > max_port || port < 0) {
             return;
         }
