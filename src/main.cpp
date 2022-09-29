@@ -1,6 +1,7 @@
 #include <mbed.h>
 
-#include "ws2812b.hpp"
+//#include "ws2812b.hpp"
+#include "led_fall.hpp"
 
 #define BLOCK 8 //LEDブロックの長さ
 #define BRIGHT 60 //明るさ
@@ -12,14 +13,17 @@
 #define REFMINV -80 //跳ね返り最小速度
 
 int main() {
-    WS2812B ws2812b(PA_15, 3, 400, 800, 850, 450, 60);
+    WS2812B ws2812b(PA_15, 60, 400, 800, 850, 450, 60);
+    led_fall first_guy(&ws2812b, 100, 0, 0, 5, 0, 59, 20, 0.6,0.1,5);
+//    ws2812b.setRGB(1,0,0,0);
     DigitalOut led(LED1);
-    ws2812b.setRGB(0,255,255,255);
-    ws2812b.setRGB(1,1,1,100);
-    ws2812b.setRGB(20,100,0,0);
+
+//    ws2812b.setRGB(1,1,1,100);
+//    ws2812b.setRGB(20,24,24,24);
     while (true) {
         led = !led;
+        first_guy.update_position();
         ws2812b.update();
-        ThisThread::sleep_for(100ms);
+        ThisThread::sleep_for(10ms);
     }
 }
