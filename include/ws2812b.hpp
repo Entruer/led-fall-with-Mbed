@@ -17,20 +17,20 @@
 
 class WS2812B {
 private:
-    unsigned int zero_high_times;
-    unsigned int one_high_times;
-    unsigned int zero_low_times;
-    unsigned int one_low_times;
+    int zero_high_times;
+    int one_high_times;
+    int zero_low_times;
+    int one_low_times;
     int reset_us;
     uint8_t *trans_buffer;
     unsigned short max_port;
     DigitalOut pin;
 public:
     WS2812B(PinName pin_name, int size,
-            unsigned int zero_high_ns,
-            unsigned int one_high_ns,
-            unsigned int zero_low_ns,
-            unsigned int one_low_ns,
+            int zero_high_ns,
+            int one_high_ns,
+            int zero_low_ns,
+            int one_low_ns,
             int reset_us) :
             reset_us(reset_us),
             pin(pin_name) {
@@ -57,8 +57,9 @@ public:
     }
 
     void update() {
-        unsigned int j;
+        int j;
         reset();
+        __disable_irq();
         for (int i = 0; i < max_port * 3; ++i) {
             for (int k = 0; k < 8; ++k) {
                 if ((trans_buffer[i] >> k) & 0x01) {
@@ -82,6 +83,7 @@ public:
                 }
             }
         }
+        __enable_irq();
     }
 
     void reset() {
